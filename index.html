@@ -2,95 +2,173 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="./style.css">
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
-
-  <title>Card Mouse Hover Effect</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro y Sorteo | Helpme_coder</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- Animación del fondo -->
+<section>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
 
-  <section>
-    <div class="container max-w-5xl mx-auto px-8">
-      <div class="card-wraper">
-        <div class="background" id="background"></div>
-        
-        <!-- Cambiamos el link para redirigir al formulario de registro -->
-        <a href="http://127.0.0.1:5500/registro/index.html" class="card relative group block p-2 h-full w-full">
-          <div class="card-main">
-            <div class="card-inner">
-              <div>
-                <!-- El botón ahora redirige al formulario -->
-                <h3>Registro</h3>
-                <p>Haz clic aquí para registrarte</p>
-              </div>
+    <!-- Formulario de registro y tabla con nombres registrados -->
+    <div class="signin">
+      <div class="content">
+        <h2>Formulario de Registro</h2>
+        <div class="form">
+          <!-- Formulario de registro -->
+          <form id="registroForm">
+            <div class="inputBox">
+              <input type="text" id="nombre" name="nombre" required>
+              <i>Nombre</i>
             </div>
-          </div>
-        </a>
+            <div class="inputBox">
+              <input type="submit" value="Registrar">
+            </div>
+          </form>
 
-        <a href="javascript:void(0)" class="card relative group block p-2 h-full w-full">
-          <div class="card-main">
-            <div class="card-inner">
-              <div>
-                <h3>Coming Soon</h3>
-                <p>Próximamente ventas y más.</p>
-              </div>
-            </div>
+          <!-- Tabla de nombres registrados -->
+          <div class="nombresRegistrados">
+            <h3>Nombres Registrados</h3>
+            <table id="tablaNombres">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                </tr>
+              </thead>
+              <tbody id="listaNombres">
+                <!-- Los nombres aparecerán aquí -->
+              </tbody>
+            </table>
           </div>
-        </a>
 
-        <a href="javascript:void(0)" class="card relative group block p-2 h-full w-full">
-          <div class="card-main">
-            <div class="card-inner">
-              <div>
-                <h3>Coming Soon</h3>
-                <p>Próximamente mods de Dragon Ball Sparkin Zero, mods de Minecraft y más.</p>
-              </div>
-            </div>
-          </div>
-        </a>
+          <!-- Contador del sorteo -->
+          <h3>Tiempo restante para el sorteo: <span id="contador"></span></h3>
 
-        <a href="javascript:void(0)" class="card relative group block p-2 h-full w-full">
-          <div class="card-main">
-            <div class="card-inner">
-              <div>
-                <h3>Coming Soon</h3>
-                <p>Más contenido próximamente.</p>
-              </div>
-            </div>
+          <!-- Ruleta de nombres -->
+          <div id="ruletaContainer" style="display:none;">
+            <h3>Ruleta de Nombres</h3>
+            <canvas id="ruleta" width="400" height="400"></canvas>
+            <h3>Ganador: <span id="ganador" style="color:red;"></span></h3>
           </div>
-        </a>
-
-        <a href="javascript:void(0)" class="card relative group block p-2 h-full w-full">
-          <div class="card-main">
-            <div class="card-inner">
-              <div>
-                <h3>Coming Soon</h3>
-                <p>Contenido exclusivo próximamente.</p>
-              </div>
-            </div>
-          </div>
-        </a>
-
-        <a href="javascript:void(0)" class="card relative group block p-2 h-full w-full">
-          <div class="card-main">
-            <div class="card-inner">
-              <div>
-                <h3>Coming Soon</h3>
-                <p>Más contenido próximamente.</p>
-              </div>
-            </div>
-          </div>
-        </a>
-        
+        </div>
       </div>
     </div>
-  </section>
+</section>
 
-  <script src="./script.js"></script>
+<!-- Script -->
+<script src="script.js"></script>
 
 </body>
 </html>

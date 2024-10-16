@@ -1,107 +1,156 @@
-document.addEventListener("DOMContentLoaded", function () {
-  var cards = document.querySelectorAll("a.card");
-  var background = document.querySelector(".background");
+document.addEventListener('DOMContentLoaded', () => {
+    const registroForm = document.getElementById('registroForm');
+    const nombreInput = document.getElementById('nombre');
+    const listaNombres = document.getElementById('listaNombres');
+    const contadorDisplay = document.getElementById('contador');
+    const ruletaContainer = document.getElementById('ruletaContainer');
+    const canvasRuleta = document.getElementById('ruleta');
+    const ganadorDisplay = document.getElementById('ganador');
+    
+    let nombres = [];
+    let tiempoRestante = 30; // 24 horas en segundos
+    let anguloInicial = 0;
+    let velocidadGiro = 0;
+    let girando = false;
 
-  // Función para registrar un usuario
-  function registrarUsuario() {
-    // Solicita el nombre al usuario
-    var nombre = prompt("Ingrese su nombre para registrarse:");
+    // Manejar el envío del formulario
+    registroForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nombre = nombreInput.value.trim();
+    
+        if (nombre) {
+            nombres.push(nombre);
+            agregarNombreATabla(nombre);
+            nombreInput.value = '';
+            guardarNombres();
+        }
+    });
 
-    if (nombre) {
-      // Guarda el nombre en localStorage con un timestamp
-      const registro = {
-        nombre: nombre,
-        timestamp: Date.now(),
-      };
-      localStorage.setItem("registroUsuario", JSON.stringify(registro));
-
-      // Eliminar el registro después de 24 horas (86400000 ms)
-      setTimeout(() => {
-        localStorage.removeItem("registroUsuario");
-        alert("El registro ha sido eliminado.");
-      }, 24 * 60 * 60 * 1000); // 24 horas en milisegundos
-
-      alert("Usuario registrado: " + nombre);
+    // Guardar los nombres en localStorage
+    function guardarNombres() {
+        localStorage.setItem('nombres', JSON.stringify(nombres));
     }
-  }
 
-  // Código existente para el efecto hover y el zoom
-  var lastHoveredCardIndex = localStorage.getItem("lastHoveredCardIndex") || 0;
-  var cardRect = cards[lastHoveredCardIndex].getBoundingClientRect();
-  var x = cardRect.left + window.scrollX + cardRect.width / 2;
-  var y = cardRect.top + window.scrollY + cardRect.height / 2;
+    // Cargar los nombres desde localStorage
+    function cargarNombres() {
+        const nombresGuardados = localStorage.getItem('nombres');
+        if (nombresGuardados) {
+            nombres = JSON.parse(nombresGuardados);
+            nombres.forEach(agregarNombreATabla);
+        }
+    }
 
-  background.style.width = cardRect.width + "px";
-  background.style.height = cardRect.height + "px";
-  background.style.transform = `translate(${x - cardRect.width / 2}px, ${
-    y - cardRect.height / 2
-  }px)`;
-  background.style.opacity = "0";
+    // Agregar un nombre a la tabla
+    function agregarNombreATabla(nombre) {
+        const fila = document.createElement('tr');
+        const celda = document.createElement('td');
+        celda.textContent = nombre;
+        fila.appendChild(celda);
+        listaNombres.appendChild(fila);
+    }
 
-  cards.forEach(function (card, index) {
-    card.addEventListener("mouseenter", function (e) {
-      if (card.classList.contains("zoomed")) {
-        return;
-      }
+    // Actualizar el contador de tiempo
+    function actualizarContador() {
+        const horas = Math.floor(tiempoRestante / 3600);
+        const minutos = Math.floor((tiempoRestante % 3600) / 60);
+        const segundos = tiempoRestante % 60;
+        contadorDisplay.textContent = `${horas}h ${minutos}m ${segundos}s`;
 
-      var rect = card.getBoundingClientRect();
-      x = rect.left + window.scrollX + rect.width / 2;
-      y = rect.top + window.scrollY + rect.height / 2;
+        if (tiempoRestante > 0) {
+            tiempoRestante--;
+        } else {
+            iniciarRuleta();
+        }
+    }
 
-      background.style.width = rect.width + "px";
-      background.style.height = rect.height + "px";
-      background.style.transform = `translate(${x - rect.width / 2}px, ${
-        y - rect.height / 2
-      }px)`;
-      background.style.opacity = "1";
-      background.style.top = "0%";
-      background.style.left = "0%";
-      background.style.transformOrigin = "center";
-      localStorage.setItem("lastHoveredCardIndex", index);
-    });
+    // Función para iniciar la ruleta
+    function iniciarRuleta() {
+        ruletaContainer.style.display = 'block';
+        girando = true;
+        velocidadGiro = 10; // Velocidad inicial del giro
+        animarRuleta();
+    }
 
-    card.addEventListener("mouseleave", function (e) {
-      background.style.opacity = "0";
-      background.style.width = "0px";
-      background.style.height = "0px";
-    });
+    // Función para animar la ruleta
+    function animarRuleta() {
+        if (girando) {
+            anguloInicial += velocidadGiro;
+            velocidadGiro *= 0.98; // Reducción gradual de la velocidad
+            if (velocidadGiro < 0.1) {
+                girando = false;
+                seleccionarGanador();
+                return;
+            }
+            dibujarRuleta();
+            requestAnimationFrame(animarRuleta);
+        }
+    }
 
-    card.addEventListener("click", function () {
-      if (card.classList.contains("zoomed")) {
-        card.classList.remove("zoomed");
-        card.style.transform = "none";
-        card.style.position = "relative";
-        card.style.width = "unset";
-        card.style.height = "unset";
-        card.style.top = "0";
-        card.style.left = "0";
-        card.style.zIndex = "0";
-        document.body.classList.remove("overflow");
-
-        cards.forEach(function (otherCard) {
-          if (otherCard !== card) {
-            otherCard.classList.remove("opacity-0");
-          }
+    // Dibujar la ruleta
+    function dibujarRuleta() {
+        const ctx = canvasRuleta.getContext('2d');
+        const anguloPorNombre = (2 * Math.PI) / nombres.length;
+        ctx.clearRect(0, 0, 400, 400); // Limpiar el canvas
+    
+        nombres.forEach((nombre, i) => {
+            const anguloInicio = anguloInicial + i * anguloPorNombre;
+            const anguloFinal = anguloInicio + anguloPorNombre;
+            
+            ctx.beginPath();
+            ctx.moveTo(200, 200); // Centro del círculo
+            ctx.arc(200, 200, 200, anguloInicio, anguloFinal);
+            ctx.fillStyle = i % 2 === 0 ? '#f00' : '#333';
+            ctx.fill();
+            ctx.stroke();
+    
+            // Dibujar el nombre en el segmento
+            ctx.save();
+            ctx.translate(200, 200);
+            ctx.rotate(anguloInicio + anguloPorNombre / 2);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#fff';
+            ctx.font = '20px Arial';
+            ctx.fillText(nombre, 180, 10);
+            ctx.restore();
         });
-      } else {
-        card.classList.add("zoomed");
-        card.style.position = "fixed";
-        card.style.top = "50%";
-        card.style.left = "50%";
-        requestAnimationFrame(function () {
-          card.style.transform = "translate(-50%, -50%)";
-        });
-        card.style.width = "90vw";
-        card.style.height = "90vh";
-        card.style.zIndex = "1000";
-        document.body.classList.add("overflow");
+    }
 
-        cards.forEach(function (otherCard) {
-          if (otherCard !== card) {
-            otherCard.classList.add("opacity-0");
-          }
-        });
-      }
-    });
-  });
+    // Seleccionar un ganador y mostrar animación
+    function seleccionarGanador() {
+        const ganador = nombres[Math.floor(Math.random() * nombres.length)];
+        ganadorDisplay.textContent = ganador;
+        animarGanador(ganador);
+        setTimeout(() => {
+            borrarNombres();
+        }, 3000); // Borrar los nombres después de 3 segundos
+    }
+
+    // Animar el nombre del ganador
+    function animarGanador(nombre) {
+        ganadorDisplay.textContent = nombre;
+        ganadorDisplay.style.animation = "parpadear 1s infinite";
+    }
+
+    // Borrar nombres de la tabla
+    function borrarNombres() {
+        nombres = [];
+        listaNombres.innerHTML = '';
+        localStorage.removeItem('nombres');
+        ganadorDisplay.style.animation = "";
+    }
+
+    // Cargar nombres al iniciar
+    cargarNombres();
+    setInterval(actualizarContador, 1000);
+
+    // Animación de parpadeo para el nombre ganador
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes parpadear {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
 });
